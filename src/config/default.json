@@ -1,0 +1,6 @@
+{
+  "auth": {
+    "key": "MyS3cr3tK3Y",
+    "tokenExpiresIn": "7d"
+  }
+}
