@@ -7,7 +7,7 @@
     "test": "NODE_ENV=test jest --verbose",
     "test:coverage": "NODE_ENV=test jest --coverage",
     "dev": "nodemon ./server.js",
-    "start": "node ./parking-car-back/server.js",
+    "start": "node ./server.js",
     "db:create": "sequelize-cli db:create"
   },
   "repository": {
