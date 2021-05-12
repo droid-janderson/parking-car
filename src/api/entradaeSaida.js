@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const EntradaeSaidaService = require('../services/entradaeSaida')
 const { EntradaeSaida } = require('../models')
+const moment = require('moment')
 
 const entradaeSaidaService = new EntradaeSaidaService(EntradaeSaida)
 
@@ -25,11 +26,11 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-router.get('/relatorio/:data_inicial', async (req, res) => {
+router.get('/relatorio/:data', async (req, res) => {
   try {
-    const { data_inicial } = req.params
+    const { data } = req.params
 
-    const entradaeSaida = await entradaeSaidaService.getByDate(data_inicial)
+    const entradaeSaida = await entradaeSaidaService.getByDate(data)
     res.json(entradaeSaida)
   } catch (err) {
     res.status(400).send(err.message)
@@ -38,10 +39,10 @@ router.get('/relatorio/:data_inicial', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const entradaeSaida = req.body
-    await entradaeSaidaService.create(entradaeSaida)
+    const { veiculoId, placa, status } = req.body
+    await entradaeSaidaService.create({ placa, status }, veiculoId)
 
-    res.status(201).json(entradaeSaida)
+    res.status(201).json({ veiculoId, placa, status })
   } catch (err) {
     res.status(400).send(err.message)
   }
@@ -69,7 +70,17 @@ router.delete('/:id', async (req, res, next) => {
 router.put('/:id', async (req, res) => {
   try {
     const entradaeSaida = await entradaeSaidaService.getById(req.params.id)
-    await entradaeSaida.update(req.body)
+
+    const usuarioDTO = req.body
+
+    if (usuarioDTO.status === 2) {
+      usuarioDTO.data_saida = moment().format()
+    } else {
+      throw new Error('Status invalid')
+    }
+
+    await entradaeSaida.update(usuarioDTO)
+
     res.json(entradaeSaida)
 
   } catch (err) {

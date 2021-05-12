@@ -42,6 +42,7 @@ class UsuarioService {
   async update(id, usuarioDTO) {
     try {
       const usuario = await this.Usuario.findOne({ where: { id: id } })
+      usuarioDTO.senha = bcrypt.hashSync(usuarioDTO.senha, SALT)
 
       if (usuario) {
         await usuario.save(usuarioDTO)

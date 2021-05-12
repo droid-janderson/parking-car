@@ -17,7 +17,6 @@ const empresa = (sequelize, DataTypes) => {
     },
     cidade: {
       type: DataTypes.STRING,
-      unique: true,
       allowNull: false,
       validate: {
         notEmpty: true

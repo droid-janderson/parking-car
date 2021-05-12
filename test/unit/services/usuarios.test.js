@@ -1,6 +1,5 @@
 const { Usuario } = require('../../src/models')
 const bcrypt = require('bcryptjs')
-const truncate = require ('../utilis/truncate')
 const request = require('supertest')
 
 

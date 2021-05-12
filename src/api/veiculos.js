@@ -27,8 +27,8 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { proprietarioId, placa, cor, modelo } = req.body
-    await veiculoService.create({ placa, cor, modelo }, proprietarioId)
+    const { placa, cor, modelo } = req.body
+    await veiculoService.create({ placa, cor, modelo })
 
     res.status(201).json({ placa, cor, modelo })
   } catch (err) {

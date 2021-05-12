@@ -14,11 +14,11 @@ class EntradaeSaidaService {
     }
   }x
 
-  async getByDate(data_entrada) {
+  async getByDate(data) {
     try {
       return await this.EntradaeSaida.findAll({
         where: {
-          data_entrada: data_entrada
+          data_entrada: data
         }
       })
     } catch (err) {
@@ -47,13 +47,6 @@ class EntradaeSaidaService {
   async update(id, entradaeSaidaDTO) {
     try {
       await this.EntradaeSaida.findOne({ where: { id: id } })
-      const status = entradaeSaidaDTO.status
-
-      if (status !== 2) {
-        throw new Error('Invalid Update')
-      }
-
-      entradaeSaidaDTO.data_saida = moment().format()
       await this.EntradaeSaida.save(entradaeSaidaDTO)
     } catch (err) {
       throw new Error(err)
