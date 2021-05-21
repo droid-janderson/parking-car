@@ -1,2 +1,2 @@
-<h1> Front end do projeto Parkin Car </h1>
-Front: https://sleepy-thompson-ce71e7.netlify.app/
+# Front-end do projeto Parkin Car
+https://github.com/droid-janderson/parking-car-front
