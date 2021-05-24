@@ -2,9 +2,8 @@ const bcrypt = require('bcryptjs')
 const SALT = 8
 
 class UsuarioService {
-  constructor(Usuario, AuthService) {
+  constructor(Usuario) {
     this.Usuario = Usuario
-    this.AuthService = AuthService
   }
 
   async get() {

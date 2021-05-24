@@ -6,7 +6,18 @@ class VeiculoService {
   async get() {
     try {
       return await this.Veiculo.findAll({
-        attributes: ['id', 'placa', 'cor', 'modelo']
+        attributes: ['id', 'placa', 'cor', 'tipo', 'modelo']
+      })
+    } catch (err) {
+      throw new Error(err)
+    }
+  }
+
+  async getByPlaca(placa) {
+    try {
+      return await this.Veiculo.findOne({
+        where: { placa: placa },
+        include: { association: 'entradaeSaida' },
       })
     } catch (err) {
       throw new Error(err)
@@ -16,7 +27,7 @@ class VeiculoService {
   async getById(id) {
     try {
       return await this.Veiculo.findByPk(id, {
-        attributes: ['id', 'placa', 'cor', 'modelo']
+        include: { association: 'entradaeSaida' }
       })
     } catch (err) {
       throw new Error(err)

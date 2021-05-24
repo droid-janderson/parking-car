@@ -2,9 +2,14 @@ const express = require('express')
 const router = express.Router()
 const EntradaeSaidaService = require('../services/entradaeSaida')
 const { EntradaeSaida } = require('../models')
+const VeiculoService = require('../services/veiculos')
+const { Veiculo } = require('../models')
+
 const moment = require('moment')
 
 const entradaeSaidaService = new EntradaeSaidaService(EntradaeSaida)
+const veiculoService = new VeiculoService(Veiculo)
+
 
 router.get('/', async (req, res) => {
   try {
@@ -26,9 +31,9 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-router.get('/relatorio/:data', async (req, res) => {
+router.get('/relatorio/', async (req, res) => {
   try {
-    const { data } = req.params
+    const { data } = req.body
 
     const entradaeSaida = await entradaeSaidaService.getByDate(data)
     res.json(entradaeSaida)
@@ -39,10 +44,21 @@ router.get('/relatorio/:data', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { veiculoId, placa, status } = req.body
-    await entradaeSaidaService.create({ placa, status }, veiculoId)
 
-    res.status(201).json({ veiculoId, placa, status })
+    const { veiculoId, placa } = req.body
+    
+    const veiculo = await veiculoService.getById(veiculoId)
+
+    if (veiculo.placa == placa && veiculo.id == veiculoId) {
+      
+      await entradaeSaidaService.create({ placa }, veiculoId)
+      res.status(201).json({ veiculoId, placa })
+
+    }
+
+    throw new Error('Veiculo invalid')
+    
+    
   } catch (err) {
     res.status(400).send(err.message)
   }
@@ -54,7 +70,7 @@ router.delete('/:id', async (req, res, next) => {
     await entradaeSaidaService.delete(id)
     if (id) {
       res.send({
-        message: "usuario deletado com Sucesso!"
+        message: "entrada deletado com Sucesso!"
       });
     } else {
       res.send({

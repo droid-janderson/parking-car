@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.67% </span>
+                <span class="strong">38.46% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/36</span>
+                <span class='fraction'>15/39</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.67% </span>
+                <span class="strong">38.46% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>15/36</span>
+                <span class='fraction'>15/39</span>
             </div>
         
             
@@ -92,21 +92,27 @@
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
 <a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -131,45 +137,48 @@
 const bcrypt = require('bcryptjs')
 const config = require('../config/default.json')
 &nbsp;
-class Auth {
+class AuthService {
   constructor(usuario) {
     this.usuario = usuario
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  genToken(usuario) {</span>
-<span class="cstat-no" title="statement not covered" >    const token = jwt.sign({ id: usuario.id }, config.auth.key, { expiresIn: config.auth.tokenExpiresIn })</span>
-<span class="cstat-no" title="statement not covered" >    return token</span>
+<span class="cstat-no" title="statement not covered" >    return jwt.sign({ id: usuario.id, role: usuario.role }, config.auth.key, { expiresIn: config.auth.tokenExpiresIn })</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
-  async signin<span class="fstat-no" title="function not covered" >(usuario, senha) {</span>
-<span class="cstat-no" title="statement not covered" >    const usuarioData = await this.usuario.findOne({</span>
+  async signin<span class="fstat-no" title="function not covered" >(email, senha, role) {</span>
+<span class="cstat-no" title="statement not covered" >    const usuario = await this.usuario.findOne({</span>
 <span class="cstat-no" title="statement not covered" >      where: {</span>
-<span class="cstat-no" title="statement not covered" >        usuario: usuario</span>
+<span class="cstat-no" title="statement not covered" >        email: email</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >    })</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    if (usuarioData === null) {</span>
+<span class="cstat-no" title="statement not covered" >    if (usuario === null) {</span>
 <span class="cstat-no" title="statement not covered" >      throw new Error('Invalid Email or Password!')</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    const senhaValida = bcrypt.compareSync(senha, usuarioData.senha_hash)</span>
+<span class="cstat-no" title="statement not covered" >    const senhaValida = bcrypt.compareSync(senha, usuario.senha)</span>
 <span class="cstat-no" title="statement not covered" >    if (!senhaValida) {</span>
 <span class="cstat-no" title="statement not covered" >      throw new Error('Invalid Email or Password!')</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    const token = this.genToken(usuarioData)</span>
-<span class="cstat-no" title="statement not covered" >    const { nome } = usuarioData</span>
-<span class="cstat-no" title="statement not covered" >    return { token, userData: { nome, usuario } }</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    if (role !== usuario.role) {</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error('Invalid Role!')</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" >    const token = this.genToken(usuario)</span>
+<span class="cstat-no" title="statement not covered" >    const { nome } = usuario</span>
+<span class="cstat-no" title="statement not covered" >    return { token, usuario: { nome, email, role } }</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 }
 &nbsp;
-module.exports = Auth</pre></td></tr></table></pre>
+module.exports = AuthService</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed May 05 2021 18:47:26 GMT-0300 (Horário Padrão de Brasília)
+                at Fri May 21 2021 02:41:35 GMT-0300 (Horário Padrão de Brasília)
             </div>
         </div>
         <script src="../../prettify.js"></script>

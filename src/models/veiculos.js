@@ -15,6 +15,13 @@ const veiculo = (sequelize, DataTypes) => {
         notEmpty: true
       }
     },
+    tipo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
+    },
     modelo: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -28,7 +35,7 @@ const veiculo = (sequelize, DataTypes) => {
   })
 
   Veiculo.associate = (models) => {
-    Veiculo.belongsTo(models.EntradaeSaida, {
+    Veiculo.hasOne(models.EntradaeSaida, {
       foreignKey: 'veiculoId',
       as: 'entradaeSaida'
     })

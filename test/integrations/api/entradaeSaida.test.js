@@ -3,18 +3,25 @@ const request = require('supertest')
 const config = require('../../../src/config')
 const app = require('../../../src/app')
 const { sequelize } = require('../../../src/models')
+const { signin } = require('../../helpers')
 
-const API_PROPRIETARIOS = `${config.API_BASE}/proprietarios`
+const API_ENTRADA_SAIDA = `${config.API_BASE}/entrada-saida`
 
-const DEFAULT_PROPRIETARIO = {
-  nome: 'Proprietario 1',
-  cpf: '951.111',
-  telefone: 898989
+const DEFAULT_ENTRADA_SAIDA = {
+  placa: "bc",
+  status: 1,
+  veiculoId: 1,
 }
 
+let USER_TOKEN = ''
 beforeAll(async () => {
   await sequelize.sync({ force: true })
-  await request(app).post(API_PROPRIETARIOS).send(DEFAULT_PROPRIETARIO)
+  async () => {
+    USER_TOKEN = await signin()
+    await request(app).post(API_ENTRADA_SAIDA)
+      .set('Authorization', USER_TOKEN)
+      .send(DEFAULT_ENTRADA_SAIDA)
+  }
 })
 
 afterAll(async () => {
@@ -23,20 +30,20 @@ afterAll(async () => {
 
 describe('Test the propries path', () => {
   test('It should add new user', async () => {
-    const newProprietario = {
-      nome: 'lusca',
-      cpf: '22222222',
-      telefone: 999999,
-      observacao: 'vai trabalhar vagabundo'
+    const newEntradaSaida = {
+      placa: "ba",
+      status: 1,
+      veiculoId: 2,
     }
-    const response = await request(app).post(API_PROPRIETARIOS).send(newProprietario)
+    const response = await request(app).post(API_ENTRADA_SAIDA).set('Authorization', USER_TOKEN).send(newEntradaSaida)
     expect(response.statusCode).toBe(201)
   })
 
-  test('It should get all propries', async () => {
-    const response = await request(app).get(API_PROPRIETARIOS)
-    const proprietarios = response.body
-    expect(response.statusCode).toBe(200)
-    expect(proprietarios.length).toBe(2)
-  })
+  // test('It should get all propries', async () => {
+  //   const response = await request(app).get(API_ENTRADA_SAIDA)
+  //   const entradaeSaida = response.body
+  //   expect(response.statusCode).toBe(200)
+  //   expect(entradaeSaida.length).toBe(2)
+  // })
+
 })

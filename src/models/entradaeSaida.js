@@ -8,8 +8,15 @@ const entradaeSaida = (sequelize, DataTypes) => {
         notEmpty: true
       }
     },
+    tempo: {
+      type: DataTypes.TIME,
+      validate: {
+        notEmpty: false
+      }
+    },
     status: {
       type: DataTypes.INTEGER,
+      defaultValue: 1,
       allowNull: false,
       validate: {
         notEmpty: true
@@ -18,12 +25,11 @@ const entradaeSaida = (sequelize, DataTypes) => {
     data_entrada: {
       type: DataTypes.DATE,
       validate: {
-        notEmpty: false
+        notEmpty: true
       }
     },
     data_saida: {
       type: DataTypes.DATE,
-      unique: true,
       validate: {
         notEmpty: false
       }
@@ -34,9 +40,9 @@ const entradaeSaida = (sequelize, DataTypes) => {
   })
 
    EntradaeSaida.associate = (models) => {
-     EntradaeSaida.hasMany(models.Veiculo, {
+     EntradaeSaida.belongsTo(models.Veiculo, {
        foreignKey: 'veiculoId',
-       as: 'veiculo'
+       as: 'veiculos'
      })
    }
 

@@ -7,4 +7,3 @@ sequelize.sync().then(() => {
     console.log(`servidor rodando na porta ${config.PORT}...`)
   })
 })
-
